@@ -4,23 +4,31 @@
 #include <iostream>
 
 // checks if the sphere is hit by the input ray
-bool hit_sphere(const point3& center, double radius, const ray& r) {
+double hit_sphere(const point3& center, double radius, const ray& r) {
     vec3 oc = r.origin() - center;
     auto a = dot(r.direction(), r.direction());
     auto b = 2.0 * dot(oc, r.direction());
     auto c = dot(oc, oc) - radius*radius;
     auto discriminant = b*b - 4*a*c;
-    return (discriminant > 0);
+    if (discriminant < 0) { // if no intersection
+        return -1.0;
+    } 
+    else { // otherwise intersection happened.
+        return (-b - sqrt(discriminant) ) / (2.0*a);
+    }
 }
 
 // creates a colour object output from an input ray object
 color ray_color(const ray& r) {
-    // colour for sphere
-    if (hit_sphere(point3(0,0,-1), 0.5, r))
-        return color(1, 0, 0); // make it plain red
+    auto t = hit_sphere(point3(0,0,-1), 0.5, r); // generate t values depending on sphere intersection with ray
+    // colour for sphere (takes into account of depth/height)
+    if (t > 0.0) {
+        vec3 N = unit_vector(r.at(t) - vec3(0,0,-1)); // position vector of surface point
+        return 0.5*color(N.x()+1, N.y()+1, N.z()+1); // colouring based on depth of surface point from origin
+    }
     // colour for everythng else (background)
     vec3 unit_direction = unit_vector(r.direction());
-    auto t = 0.5*(unit_direction.y() + 1.0); // smaller t corresponds to white and larger t corresponds to blue.
+    t = 0.5*(unit_direction.y() + 1.0); // smaller t corresponds to white and larger t corresponds to blue.
     return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0); // create a blend (smoothing lerp) between white and blue for the background
 }
 
