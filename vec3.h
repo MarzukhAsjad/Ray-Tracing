@@ -8,49 +8,59 @@ using std::sqrt;
 
 class vec3 {
     public:
-        // constructors
+        // Constructors
         vec3() : e{0,0,0} {}
         vec3(double e0, double e1, double e2) : e{e0, e1, e2} {}
 
-        // publicly calling individual components, e.g. y_sq = v.y * v.y 
+        // Publicly calling individual components, e.g. y_sq = v.y * v.y 
         // (assuming v already initialised as a vec3)
         double x() const { return e[0]; }
         double y() const { return e[1]; }
         double z() const { return e[2]; }
 
         // overloaded operators
-        vec3 operator-() const { return vec3(-e[0], -e[1], -e[2]); } // constant unary minus operator, returns vec with negative values
-        double operator[](int i) const { return e[i]; } // constant subscript operator (to read but can't be modified)
-        double& operator[](int i) { return e[i]; } // non constant subscript operator (to read AND modify)
+        vec3 operator-() const { return vec3(-e[0], -e[1], -e[2]); } // Constant unary minus operator, returns vec with negative values
+        double operator[](int i) const { return e[i]; } // Constant subscript operator (to read but can't be modified)
+        double& operator[](int i) { return e[i]; } // Non constant subscript operator (to read AND modify)
 
-        vec3& operator+=(const vec3 &v) { // non constant reference of vec3 object (adding)
+        vec3& operator+=(const vec3 &v) { // Non constant reference of vec3 object (adding)
             e[0] += v.e[0];
             e[1] += v.e[1];
             e[2] += v.e[2];
             return *this;
         }
 
-        vec3& operator*=(const double t) { // non constant reference of vec3 object (scalar multiplying)
+        vec3& operator*=(const double t) { // Non constant reference of vec3 object (scalar multiplying)
             e[0] *= t;
             e[1] *= t;
             e[2] *= t;
             return *this;
         }
 
-        vec3& operator/=(const double t) { // non constant reference of vec3 object (scalar dividing)
+        vec3& operator/=(const double t) { // Non constant reference of vec3 object (scalar dividing)
             return *this *= 1/t;
         }
 
-        double length() const { // length of vector (l)
+        double length() const { // Length of vector (l)
             return sqrt(length_squared());
         }
 
-        double length_squared() const { // intermediary value (l^2)
+        double length_squared() const { // Intermediary value (l^2)
             return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
         }
 
+        // Return a vec3 with random parameters in range [0, 1)
+        inline static vec3 random() {
+            return vec3(random_double(), random_double(), random_double());
+        }
+
+        // Return a vec3 with random parameteres in range [min, max)
+        inline static vec3 random(double min, double max) {
+            return vec3(random_double(min, max), random_double(min, max), random_double(min, max));
+        }
+
     public:
-        double e[3]; // for storing the x, y and z components
+        double e[3]; // For storing the x, y and z components
 };
 
 // Type aliases for vec3
@@ -103,6 +113,15 @@ inline vec3 cross(const vec3 &u, const vec3 &v) {
 
 inline vec3 unit_vector(vec3 v) {
     return v / v.length();
+}
+
+// Pick a random point in unit sphere where all parameters of the point (x,y,z) are in [-1, +1]
+vec3 random_in_unit_sphere() {
+    while (true) {
+        auto p = vec3::random(-1, 1);
+        if (p.length_squared() >= 1) continue; // If not within sphere
+        return p;
+    }
 }
 
 #endif
