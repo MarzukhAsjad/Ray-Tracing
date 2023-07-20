@@ -116,12 +116,26 @@ inline vec3 unit_vector(vec3 v) {
 }
 
 // Pick a random point in unit sphere where all parameters of the point (x,y,z) are in [-1, +1]
-vec3 random_in_unit_sphere() {
+inline vec3 random_in_unit_sphere() {
     while (true) {
         auto p = vec3::random(-1, 1);
         if (p.length_squared() >= 1) continue; // If not within sphere
         return p;
     }
+}
+
+// normalises the unit sphere by making a unit vector of it
+vec3 random_unit_vector() {
+    return unit_vector(random_in_unit_sphere());
+}
+
+// Pick a random point in unit hemisphere...
+vec3 random_in_hemisphere(const vec3& normal) {
+    vec3 in_unit_sphere = random_in_unit_sphere();
+    if (dot(in_unit_sphere, normal) > 0.0) // In the same hemisphere as the normal
+        return in_unit_sphere;
+    else
+        return -in_unit_sphere;
 }
 
 #endif
