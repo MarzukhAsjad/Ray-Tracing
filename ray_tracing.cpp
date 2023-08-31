@@ -5,22 +5,6 @@
 #include "camera.h"
 #include <iostream>
 
-
-// Checks if the sphere is hit by the input ray
-double hit_sphere(const point3& center, double radius, const ray& r) {
-    vec3 oc = r.origin() - center;
-    auto a = r.direction().length_squared(); 
-    auto half_b = dot(oc, r.direction()); // Replacing b by 2h in the roots of equation
-    auto c = oc.length_squared() - radius*radius;
-    auto discriminant = half_b*half_b - a*c;
-    if (discriminant < 0) { // If no intersection
-        return -1.0;
-    } 
-    else { // Otherwise intersection happened.
-        return (-half_b - sqrt(discriminant) ) / a;
-    }
-}
-
 // Creates a colour object output from an input ray object
 color ray_color(const ray& r, const hittable& world, int depth) { // Depth added to control recursion
     hit_record rec;
@@ -29,7 +13,7 @@ color ray_color(const ray& r, const hittable& world, int depth) { // Depth added
     if (depth <= 0)
         return color(0, 0, 0);
 
-    if (world.hit(r, 0.001, infinity, rec)) { // Ignoring hits near 0 (Decreasing tolerance) Fixes shadow acne problem
+    if (world.hit(r, interval(0.001, infinity), rec)) { // Ignoring hits near 0 (Decreasing tolerance) Fixes shadow acne problem
         point3 target = rec.p + rec.normal + random_in_hemisphere(rec.normal);
         return 0.5 * ray_color(ray(rec.p, target - rec.p), world, depth - 1); // Recursively generate rays
     }

@@ -1,10 +1,14 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
+#include "interval.h"
+#include "ray.h"
+#include "vec3.h"
+
 #include <cmath>
+#include <cstdlib>
 #include <limits>
 #include <memory>
-#include <cstdlib>
 #include <random>
 
 // Usings

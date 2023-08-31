@@ -17,7 +17,7 @@ class sphere : public hittable {
         double radius;
 };
 
-bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
+bool sphere::hit(const ray& r, interval ray_t, hit_record& rec) const {
     // calculates the terms in the equation
     vec3 oc = r.origin() - center;
     auto a = r.direction().length_squared();
@@ -31,9 +31,9 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) cons
 
     // Find the nearest root that lies in the acceptable range.
     auto root = (-half_b - sqrtd) / a; // this is the root from the equation
-    if (root < t_min || root > t_max) { // if out of range of valid time interval with negative discriminant
+    if (!ray_t.surrounds(root)) { // if out of range of valid time interval with negative discriminant
         root = (-half_b + sqrtd) / a; // then check positive discriminant
-        if (root < t_min || root > t_max) // if still out range of valid interval, then discard root
+        if (!ray_t.surrounds(root)) // if still out range of valid interval, then discard root
             return false;
     }
 
