@@ -4,12 +4,14 @@
 #include <cmath>
 #include <iostream>
 
+#include "utility.h"
+
 using std::sqrt;
 
 class vec3 {
     public:
         // Constructors
-        vec3() : e{0,0,0} {}
+        vec3() : e{0, 0, 0} {}
         vec3(double e0, double e1, double e2) : e{e0, e1, e2} {}
 
         // Publicly calling individual components, e.g. y_sq = v.y * v.y 
@@ -50,12 +52,12 @@ class vec3 {
         }
 
         // Return a vec3 with random parameters in range [0, 1)
-        inline static vec3 random() {
+        static vec3 random() {
             return vec3(random_double(), random_double(), random_double());
         }
 
         // Return a vec3 with random parameteres in range [min, max)
-        inline static vec3 random(double min, double max) {
+        static vec3 random(double min, double max) {
             return vec3(random_double(min, max), random_double(min, max), random_double(min, max));
         }
 

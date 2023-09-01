@@ -1,9 +1,9 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
-#include "interval.h"
-#include "ray.h"
-#include "vec3.h"
+// #include "interval.h"
+// #include "ray.h"
+// #include "vec3.h"
 
 #include <cmath>
 #include <cstdlib>
@@ -19,6 +19,7 @@ using std::sqrt;
 
 // Constants
 
+/// @brief 
 const double infinity = std::numeric_limits<double>::infinity();
 const double pi = 3.1415926535897932385;
 
@@ -41,13 +42,6 @@ inline double random_double(double min, double max) {
     static std::uniform_real_distribution<double> distribution(min, max);
     static std::mt19937 generator;
     return distribution(generator);
-}
-
-// Clamps the value within the range [min, max]
-inline double clamp(double x, double min, double max) {
-    if (x < min) return min;
-    if (x > max) return max;
-    return x;
 }
 
 // Common Headers

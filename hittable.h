@@ -3,6 +3,7 @@
 
 #include "ray.h"
 #include "utility.h"
+#include "interval.h"
 
 class material;
 
