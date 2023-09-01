@@ -4,6 +4,7 @@
 #include "utility.h"
 #include "color.h"
 #include "hittable.h"
+#include "material.h"
 
 #include <iostream>
 
@@ -13,7 +14,8 @@ class camera {
         double  aspect_ratio        = 1.0; // Ratio of image width over height
         int     image_width         = 100; // Rendered image width in pixel count
         int     samples_per_pixel   = 100; // Count of random samples for each pixel
-        int     max_depth           = 50; // Maximum number of ray bounces into scene   
+        int     max_depth           = 50; // Maximum number of ray bounces into scene  
+        double  reflectivity        = 0.5; // Reflectivity of light
         // auto focal_length = 1.0; // Distance between projection plane and projection point
         // const int samples_per_pixel = 100;
         
@@ -35,7 +37,7 @@ class camera {
                 }
             }
 
-            std::clog << "\rDone.\n";
+            std::clog << "\nDone.\n";
 
         }
 
@@ -100,9 +102,11 @@ class camera {
                 return color(0, 0, 0);
 
             if (world.hit(r, interval(0.001, infinity), rec)) { // Ignoring hits near 0 (Decreasing tolerance) Fixes shadow acne problem
-                
-                point3 target = rec.p + rec.normal + random_in_hemisphere(rec.normal);
-                return 0.5 * ray_color(ray(rec.p, target - rec.p), depth - 1, world); // Recursively generate rays
+                ray scattered;
+                color attenuation;
+                if (rec.mat->scatter(r, rec, attenuation, scattered))
+                    return attenuation * ray_color(scattered, depth-1, world);
+                return color(0,0,0);
             }
             vec3 unit_direction = unit_vector(r.direction());
             auto t = 0.5*(unit_direction.y() + 1.0);

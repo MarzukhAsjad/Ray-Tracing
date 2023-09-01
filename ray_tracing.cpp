@@ -26,8 +26,16 @@ int main() {
 
     // World
     hittable_list world;
-    world.add(make_shared<sphere>(point3(0,0,-1), 0.5)); // The sphere
-    world.add(make_shared<sphere>(point3(0,-100.5,-1), 100)); // The ground (a large sphere)
+
+    auto material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0)); // Material for the ground
+    auto material_center = make_shared<lambertian>(color(0.7, 0.3, 0.3)); // Material for the center sphere
+    auto material_left   = make_shared<metal>(color(0.8, 0.8, 0.8), 0.3); // Material for the metal sphere on the left
+    auto material_right  = make_shared<metal>(color(0.8, 0.6, 0.2), 1.0); // Material for the metal sphere on the right
+
+    world.add(make_shared<sphere>(point3( 0.0, -100.5, -1.0), 100.0, material_ground)); // Sphere for the ground
+    world.add(make_shared<sphere>(point3( 0.0,    0.0, -1.0),   0.5, material_center)); // Center sphere
+    world.add(make_shared<sphere>(point3(-1.0,    0.0, -1.0),   0.5, material_left)); // Left sphere
+    world.add(make_shared<sphere>(point3( 1.0,    0.0, -1.0),   0.5, material_right)); // Right sphere
 
     // Camera and properties
     camera cam;
@@ -35,7 +43,7 @@ int main() {
     cam.image_width = 400;
     cam.samples_per_pixel = 100;
     cam.max_depth = 50;
-    
+    cam.reflectivity = 0.5;
     // Render
     cam.render(world);
 }
